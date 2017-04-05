@@ -31,6 +31,7 @@ Starting the container:
         -e S3_PREFIX=<key_prefix> \
         -e AWS_ACCESS_KEY=<access_key> \
         -e AWS_SECRET_KEY=<secret_key> \
+        -e AWS_REGION=<region> \
         -e HOSTNAME=<host> \
         -e JAVA_OPTS="-Xms512m -Xmx1G"
         tritruongtr/zookeeper-exhibitor
