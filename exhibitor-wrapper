@@ -1,0 +1,48 @@
+#!/bin/bash -e
+
+MISSING_VAR_MESSAGE="must be set"
+# variables must set and is not null, otherwise error be written to standard error and the shell exits with a non-zero exit status
+: ${S3_BUCKET:?'Missing $S3_BUCKET. Should be the bucket used by Exhibitor for backups and coordination'}
+: ${S3_PREFIX:?'Missing $S3_PREFIX. Should be the key prefix within $S3_BUCKET to use for this cluster'}
+: ${AWS_ACCESS_KEY:?'Missing $AWS_ACCESS_KEY. Should be the AWS access key with read/write permissions on $S3_BUCKET'}
+: ${AWS_SECRET_KEY:?'Missing $AWS_SECRET_KEY. Should be the AWS secret key for $AWS_ACCESS_KEY'}
+
+# default environment variables
+${HTTP_PORT:-8080}
+${CLIENT_PORT:-2181}
+${CONNECT_PORT:-2888}
+${ELECTION_PORT:-3888}
+
+if [[ -n ${S3_BUCKET} ]]; then
+    S3_CONFIG="-c s3 --s3credentials /opt/s3-credentials.properties --s3config ${S3_BUCKET}:${S3_PREFIX} --s3region ${AWS_REGION}"
+fi
+
+cat <<EOF > /exhibitor/exhibitor.properties
+zookeeper-install-directory=/zookeeper
+client-port=$CLIENT_PORT
+connect-port=$CONNECT_PORT
+election-port=$ELECTION_PORT
+zoo-cfg-extra=tickTime\=2000&initLimit\=10&syncLimit\=5&quorumListenOnAllIPs\=true
+auto-manage-instances-settling-period-ms=0
+auto-manage-instances=1
+zookeeper-data-directory=/zookeeper/snapshots
+zookeeper-log-directory=/zookeeper/transactions
+log-index-directory=/zookeeper/transactions
+java-environment=export JAVA_OPTS\="$JAVA_OPTS"
+EOF
+
+cat <<EOF > /zookeeper/conf/java.env
+ZOO_LOG_DIR="/var/log/zookeeper"
+EOF
+
+cat <<EOF > /opt/s3-credentials.properties
+com.netflix.exhibitor.s3.access-key-id=${AWS_ACCESS_KEY}
+com.netflix.exhibitor.s3.access-secret-key=${AWS_SECRET_KEY}
+EOF
+
+java -jar /exhibitor/exhibitor-1.5.6.jar \
+    ${S3_CONFIG} \
+    --defaultconfig=/exhibitor/exhibitor.properties \
+    --port=${HTTP_PORT} \
+    --hostname ${HOSTNAME} \
+    $@
