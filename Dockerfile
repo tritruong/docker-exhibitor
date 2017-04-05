@@ -10,7 +10,6 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 COPY pom.xml /exhibitor/pom.xml
-COPY exhibitor-wrapper /exhibitor-wrapper
 
 RUN wget -q http://archive.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VER}/zookeeper-${ZOOKEEPER_VER}.tar.gz.md5 && \
     wget -q http://archive.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VER}/zookeeper-${ZOOKEEPER_VER}.tar.gz && \
@@ -23,5 +22,7 @@ RUN wget -q http://archive.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VER}/
     mv target/exhibitor-1.5.6.jar ./ && \
     rm -rf /exhibitor/target && \
     rm /exhibitor/pom.xml
+
+COPY exhibitor-wrapper /exhibitor-wrapper
 
 ENTRYPOINT ["/exhibitor-wrapper"]
