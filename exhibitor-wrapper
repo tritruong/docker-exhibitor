@@ -1,12 +1,5 @@
 #!/bin/bash -e
 
-MISSING_VAR_MESSAGE="must be set"
-# variables must set and is not null, otherwise error be written to standard error and the shell exits with a non-zero exit status
-: ${S3_BUCKET:?'Missing $S3_BUCKET. Should be the bucket used by Exhibitor for backups and coordination'}
-: ${S3_PREFIX:?'Missing $S3_PREFIX. Should be the key prefix within $S3_BUCKET to use for this cluster'}
-: ${AWS_ACCESS_KEY:?'Missing $AWS_ACCESS_KEY. Should be the AWS access key with read/write permissions on $S3_BUCKET'}
-: ${AWS_SECRET_KEY:?'Missing $AWS_SECRET_KEY. Should be the AWS secret key for $AWS_ACCESS_KEY'}
-
 # default environment variables
 ${HTTP_PORT:-8080}
 ${CLIENT_PORT:-2181}
