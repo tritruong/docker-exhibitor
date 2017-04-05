@@ -29,8 +29,8 @@ Starting the container:
     docker run -p 8181:8181 -p 2181:2181 -p 2888:2888 -p 3888:3888 \
         -e S3_BUCKET=<bucket> \
         -e S3_PREFIX=<key_prefix> \
-        -e AWS_ACCESS_KEY_ID=<access_key> \
-        -e AWS_SECRET_ACCESS_KEY=<secret_key> \
+        -e AWS_ACCESS_KEY=<access_key> \
+        -e AWS_SECRET_KEY=<secret_key> \
         -e HOSTNAME=<host> \
         -e JAVA_OPTS="-Xms512m -Xmx1G"
         tritruongtr/zookeeper-exhibitor
