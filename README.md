@@ -26,7 +26,7 @@ The container expects the following environment variables to be passed in:
 
 Starting the container:
 
-    docker run -p 8181:8181 -p 2181:2181 -p 2888:2888 -p 3888:3888 \
+    docker run -d -p 8080:8080 -p 2181:2181 -p 2888:2888 -p 3888:3888 \
         -e S3_BUCKET=<bucket> \
         -e S3_PREFIX=<key_prefix> \
         -e AWS_ACCESS_KEY=<access_key> \
